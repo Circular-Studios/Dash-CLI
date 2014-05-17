@@ -12,12 +12,10 @@ void main( string[] args )
 
     // Default vars for execution.
     string gameDir = getcwd();
-    string zipName = "game.zip";
 
     // Get the directory of the game.
     args.getopt(
-        "g|game-dir", &gameDir,
-        "o|zip-file", &zipName );
+        "g|game-dir", &gameDir );
 
     // Make sure gameDir is normalized.
     gameDir = gameDir.absolutePath.buildNormalizedPath();
@@ -26,12 +24,20 @@ void main( string[] args )
     {
     case "compress":
         writeln( "Compressing game content" );
+
         compressYaml( gameDir );
         break;
+
     case "publish":
         writeln( "Packaging game for publishing" );
+
+        string zipName = "game.zip";
+        args.getopt(
+            "o|zip-file", &zipName );
+
         publishGame( gameDir, zipName );
         break;
+
     default:
         printHelp();
         break;

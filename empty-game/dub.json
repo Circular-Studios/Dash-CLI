@@ -1,45 +1,40 @@
 {
-	"name": "sample-dash-game",
-	"description": "A sample D game built with Dash.",
-	"copyright": "2014",
-	"license": "MIT",
-	"authors": [
-		"Colden Cullen",
-		"Brandon Littell",
-		"Eric Christenson",
-		"Tyler Wozniak",
-		"Sean Brennan",
-		"Timothy Reynolds"
-	],
-	"dependencies": {
-		"dash": "~master"
-	},
-	"sourcePaths": [
-		"Scripts/",
-		"Config/",
-		"Materials/",
-		"Objects/",
-		"Prefabs/",
-		"UI/",
-	],
-	"importPaths": [ "Scripts/" ],
-	"targetType": "executable",
-	"targetPath": "Binaries",
-	"workingDirectory": "Binaries",
-	"lflags-linux" : [ "./libawesomium-1.6.5.so" ],
-	"libs-windows": [
-		"Awesomium",
-		"gdi32", "ole32", "kernel32",
-		"user32", "comctl32", "comdlg32"
-	],
+    "name": "dash-game",
+    "description": "A game built with Dash.",
+    "copyright": "2014",
+    "license": "MIT",
+    "authors": [
+        "Your Name Here"
+    ],
+    "dependencies": {
+        "dash": "~>0.9.0"
+    },
+    "sourcePaths": [
+        "Scripts/",
+        "Config/",
+        "Materials/",
+        "Objects/",
+        "Prefabs/",
+        "UI/",
+    ],
+    "importPaths": [ "Scripts/" ],
+    "targetType": "executable",
+    "targetPath": "Binaries",
+    "workingDirectory": "Binaries",
+    "lflags-linux" : [ "./libawesomium-1.6.5.so" ],
+    "libs-windows": [
+        "Awesomium",
+        "gdi32", "ole32", "kernel32",
+        "user32", "comctl32", "comdlg32"
+    ],
 
-	"stringImportPaths": [ "./" ],
+    "stringImportPaths": [ "./" ],
 
-	"buildTypes": {
-		"release": {
-			"versions": [ "EmbedContent" ],
-			"buildOptions": [ "releaseMode", "optimize", "inline" ],
-			"lflags-windows": [	"/EXETYPE:NT", "/SUBSYSTEM:WINDOWS" ]
-		}
-	}
+    "buildTypes": {
+        "release": {
+            "versions": [ "EmbedContent" ],
+            "buildOptions": [ "releaseMode", "optimize", "inline" ],
+            "lflags-windows": [ "/EXETYPE:NT", "/SUBSYSTEM:WINDOWS" ]
+        }
+    }
 }

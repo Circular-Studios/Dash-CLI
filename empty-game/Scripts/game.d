@@ -1,5 +1,5 @@
 module game;
-import core;
+import core, utility;
 
 mixin ContentImport;
 

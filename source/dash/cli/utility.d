@@ -1,8 +1,9 @@
 module dash.cli.utility;
 
+import yaml;
 import std.path;
 
- struct Folder
+struct Folder
 {
     string name;
     bool publishable;
@@ -24,12 +25,16 @@ Folder[] folders = [
     scripts, textures, ui
 ];
 
-auto relToGame( String )( String path, string gameDir )
+Node makeMap()
 {
-    return path.absolutePath().relativePath( gameDir ).buildNormalizedPath();
+    Node content = [ "": "" ];
+    content.removeAt( 0 );
+    return content;
 }
 
-auto inGame( String )( String path, string gameDir )
+Node makeArray()
 {
-    return gameDir.buildNormalizedPath( path ).absolutePath.buildNormalizedPath();
+    Node content = [ "" ];
+    content.removeAt( 0 );
+    return content;
 }

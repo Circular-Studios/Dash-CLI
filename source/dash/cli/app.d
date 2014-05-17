@@ -1,57 +1,64 @@
 module dash.cli.app;
 import dash.cli.commands, dash.cli.project;
-import dash.cli.compress, dash.cli.publish, dash.cli.create;
 
-import std.stdio, std.string, std.getopt, std.path;
+import std.algorithm, std.stdio;
 
 void main( string[] args )
 {
-    if( args.length < 2 )
-    {
-        return printHelp();
-    }
-
     // The project to operate on.
-    auto project = new Project;
+    Project project = new Project;
 
-    // Default vars for execution.
-    string gameDir = getcwd();
+    // all avaliable commands.
+    Command[] commands = [
+        cast(Command)new CreateCommand,
+        cast(Command)new CompressCommand,
+        cast(Command)new PublishCommand,
+    ];
 
-    // Get the directory of the game.
-    args.getopt(
-        "g|game-dir", &gameDir );
-
-    // Make sure gameDir is normalized.
-    gameDir = gameDir.absolutePath.buildNormalizedPath();
-
-    switch( args[ 1 ].toLower )
+    // If invalid number of args, return.
+    if( args.length == 1 )
     {
-    case "create":
-        writeln( "Creating a new project" );
-
-        createProject( gameDir );
-        break;
-
-    case "compress":
-        writeln( "Compressing game content" );
-
-        compressYaml( gameDir );
-        break;
-
-    case "publish":
-        writeln( "Packaging game for publishing" );
-
-        string zipName = "game.zip";
-        args.getopt(
-            "o|zip-file", &zipName );
-
-        publishGame( gameDir, zipName );
-        break;
-
-    default:
         printHelp();
-        break;
+        return;
     }
+
+    // Get the command.
+    auto cmdIdx = commands.countUntil!( cmd => cmd.name == args[ 1 ] );
+    if( cmdIdx == -1 )
+    {
+        fail( "Unkown command \"", args[ 1 ], "\"" );
+        return;
+    }
+
+    // The command to execute.
+    Command cmd = commands[ cmdIdx ];
+
+    args = args[ 0 ] ~ args[ 2..$ ];
+
+    // Give project the first crack at args.
+    project.prepare( args );
+
+    // Then the command.
+    cmd.prepare( args );
+
+    // Make sure there are no leftover args.
+    if( args.length > 1 )
+    {
+        fail( "Unknown args: ", args[ 1..$ ] );
+    }
+
+    // Then execute.
+    cmd.execute( project );
+}
+
+void fail( Args... )( Args messages )
+{
+    foreach( msg; messages )
+        write( msg );
+
+    writeln();
+
+    printHelp();
 }
 
 void printHelp()

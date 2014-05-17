@@ -10,29 +10,36 @@ abstract class Command
     string name;
     string[] argPattern;
 
-    abstract void prepare( string[] );
+    this( string name, string[] argPattern )
+    {
+        this.name = name;
+        this.argPattern = argPattern;
+    }
+
+    abstract void prepare( ref string[] );
     abstract void execute( Project );
-}
-
-class CreateCommand : Command
-{
-    bool leaveGitkeep = false;
-
-    this()
-    {
-        name = "create";
-        argPattern = [ "[name]" ];
-    }
-
-    override void prepare( string[] args )
-    {
-        args.getopt(
-            "g|gitkeep", &leaveGitkeep );
-    }
 
     void opCall( Project project )
     {
         execute( project );
+    }
+}
+
+class CreateCommand : Command
+{
+    bool leaveGitkeep;
+
+    this()
+    {
+        super( "create", [ "[project]" ] );
+
+        leaveGitkeep = false;
+    }
+
+    override void prepare( ref string[] args )
+    {
+        args.getopt(
+            "k|gitkeep", &leaveGitkeep );
     }
 
     override void execute( Project project )
@@ -53,7 +60,7 @@ class CreateCommand : Command
                 continue;
 
             // Make sure folder exists.
-            auto absPath = project.pathOfMember( de.name );
+            auto absPath = project.pathToMember( de.name );
             if( !absPath.dirName.exists )
                 absPath.dirName.mkdirRecurse();
 
@@ -71,11 +78,10 @@ class CompressCommand : Command
 {
     this()
     {
-        name = "compress";
-        argPattern = [ "[name]" ];
+        super( "compress", [ "[project]" ] );
     }
 
-    override void prepare( string[] args )
+    override void prepare( ref string[] args )
     {
 
     }
@@ -97,7 +103,7 @@ class CompressCommand : Command
         foreach( entry; project.directory.dirEntries( "*.y{a,}ml", SpanMode.depth ) )
         {
             // Get list of folders/filename
-            auto folders = project.pathOfMember( entry.name ).split( dirSeparator );
+            auto folders = project.pathToMember( entry.name ).split( dirSeparator );
 
             // Remove . in path.
             if( folders[ 0 ] == "." )
@@ -122,7 +128,7 @@ class CompressCommand : Command
             loader.constructor = ctor;
             auto docs = loader.loadAll();
 
-            //
+            // If there's only 1 document, don't make it a sequence.
             if( docs.length == 1 )
             {
                 *current = docs[ 0 ];
@@ -141,31 +147,37 @@ class CompressCommand : Command
             content.removeAt( "Content" );
 
         // Write to content file.
-        Dumper( project.pathOfMember( "Content.yml" ) ).dump( content );
+        Dumper( project.pathToMember( "Content.yml" ) ).dump( content );
     }
 }
 
 class PublishCommand : Command
 {
     string zipName;
+    CompressCommand compress;
 
     this()
     {
-        name = "publish";
-        argPattern = [ "[name]", "<[zip name]>" ];
+        super( "publish", [ "[project]" ] );
+
+        zipName = "game.zip";
+        compress = new CompressCommand;
     }
 
-    override void prepare( string[] args )
+    override void prepare( ref string[] args )
     {
+        args.getopt(
+            "o|zipfile", &zipName );
 
+        compress.prepare( args );
     }
 
     override void execute( Project project )
     {
         import std.zip;
         import proc = std.process;
-        //TODO: Make sure Yaml is in good shape.
-        //compressYaml( gameDir );
+        // Make sure Yaml is in good shape.
+        compress.execute( project );
 
         // Current working dir.
         auto curPath = getcwd();
@@ -184,14 +196,14 @@ class PublishCommand : Command
         auto zip = new ZipArchive();
 
         // Directories to zip.
-        auto dirs = folders.filter!( dir => dir.publishable ).map!( pth => project.pathOfMember( pth.name ) );
+        auto dirs = folders.filter!( dir => dir.publishable ).map!( pth => project.pathToMember( pth.name ) );
 
         // Put each file in the zip.
         foreach( dir; dirs ) foreach( file; dir.dirEntries( SpanMode.breadth ).filter!( entry => entry.isFile ) )
         {
             auto am = new ArchiveMember();
             am.compressionMethod = CompressionMethod.deflate;
-            am.name = project.pathOfMember( file );
+            am.name = project.pathToMember( file );
             am.expandedData = cast( ubyte[] )read( file.absolutePath );
             zip.addMember( am );
         }

@@ -38,13 +38,3 @@ Node makeArray()
     content.removeAt( 0 );
     return content;
 }
-
-auto relToGame( String )( String path, string gameDir )
-{
-    return path.absolutePath().relativePath( gameDir ).buildNormalizedPath();
-}
-
-auto inGame( String )( String path, string gameDir )
-{
-    return gameDir.buildNormalizedPath( path ).absolutePath.buildNormalizedPath();
-}

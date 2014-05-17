@@ -2,7 +2,8 @@ module dash.cli.commands;
 import dash.cli.project;
 import dash.cli.utility;
 
-import std.getopt, std.string, std.array, std.file, std.path;
+import std.getopt, std.algorithm, std.string, std.array, std.file, std.path;
+import io = std.stdio;
 
 abstract class Command
 {
@@ -142,7 +143,60 @@ class CompressCommand : Command
         // Write to content file.
         Dumper( project.pathOfMember( "Content.yml" ) ).dump( content );
     }
+}
 
-private:
+class PublishCommand : Command
+{
+    string zipName;
 
+    this()
+    {
+        name = "publish";
+        argPattern = [ "[name]", "<[zip name]>" ];
+    }
+
+    override void prepare( string[] args )
+    {
+
+    }
+
+    override void execute( Project project )
+    {
+        import std.zip;
+        import proc = std.process;
+        //TODO: Make sure Yaml is in good shape.
+        //compressYaml( gameDir );
+
+        // Current working dir.
+        auto curPath = getcwd();
+        chdir( project.directory );
+
+        // Build the game.
+        io.writeln( "Building game..." );
+        proc.execute( [ "dub", "build", "--build=release", "--force", "-q" ] );
+
+        // Go back to previous path.
+        chdir( curPath );
+
+        io.writeln( "Packaging distributable..." );
+
+        // Archive to zip to.
+        auto zip = new ZipArchive();
+
+        // Directories to zip.
+        auto dirs = folders.filter!( dir => dir.publishable ).map!( pth => project.pathOfMember( pth.name ) );
+
+        // Put each file in the zip.
+        foreach( dir; dirs ) foreach( file; dir.dirEntries( SpanMode.breadth ).filter!( entry => entry.isFile ) )
+        {
+            auto am = new ArchiveMember();
+            am.compressionMethod = CompressionMethod.deflate;
+            am.name = project.pathOfMember( file );
+            am.expandedData = cast( ubyte[] )read( file.absolutePath );
+            zip.addMember( am );
+        }
+
+        // Write the data.
+        write( zipName, cast(byte[])zip.build );
+    }
 }

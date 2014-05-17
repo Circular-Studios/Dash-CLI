@@ -10,6 +10,9 @@ void main( string[] args )
         return printHelp();
     }
 
+    // The project to operate on.
+    auto project = new Project;
+
     // Default vars for execution.
     string gameDir = getcwd();
     string zipName = "game.zip";

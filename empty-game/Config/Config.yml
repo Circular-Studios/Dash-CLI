@@ -1,0 +1,18 @@
+Logging:
+    FilePath: "your-game.log"
+    Debug:
+        OutputVerbosity: !Verbosity Debug
+        LoggingVerbosity: !Verbosity Debug
+    Release:
+        OutputVerbosity: !Verbosity Medium
+        LoggingVerbosity: !Verbosity High
+Display:
+    Fullscreen: false
+    Height: 720
+    Width: 1280
+Graphics:
+    BackfaceCulling: true
+    VSync: false
+UserInterface:
+    FilePath: "uitest.html"
+    Scale: !Vector2 1.0 1.0

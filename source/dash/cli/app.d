@@ -1,5 +1,5 @@
 module dash.cli.app;
-import dash.cli.compress, dash.cli.publish;
+import dash.cli.compress, dash.cli.publish, dash.cli.create;
 
 import std.stdio, std.string, std.getopt, std.path;
 
@@ -15,26 +15,38 @@ void main( string[] args )
 
     // Default vars for execution.
     string gameDir = getcwd();
-    string zipName = "game.zip";
 
     // Get the directory of the game.
     args.getopt(
-        "g|game-dir", &gameDir,
-        "o|zip-file", &zipName );
+        "g|game-dir", &gameDir );
 
     // Make sure gameDir is normalized.
     gameDir = gameDir.absolutePath.buildNormalizedPath();
 
     switch( args[ 1 ].toLower )
     {
+    case "create":
+        writeln( "Creating a new project" );
+
+        createProject( gameDir );
+        break;
+
     case "compress":
         writeln( "Compressing game content" );
+
         compressYaml( gameDir );
         break;
+
     case "publish":
         writeln( "Packaging game for publishing" );
+
+        string zipName = "game.zip";
+        args.getopt(
+            "o|zip-file", &zipName );
+
         publishGame( gameDir, zipName );
         break;
+
     default:
         printHelp();
         break;

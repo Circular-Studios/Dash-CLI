@@ -1,8 +1,9 @@
 module dash.cli.utility;
 
+import yaml;
 import std.path;
 
- struct Folder
+struct Folder
 {
     string name;
     bool publishable;
@@ -23,6 +24,20 @@ Folder[] folders = [
     meshes, objects, prefabs,
     scripts, textures, ui
 ];
+
+Node makeMap()
+{
+    Node content = [ "": "" ];
+    content.removeAt( 0 );
+    return content;
+}
+
+Node makeArray()
+{
+    Node content = [ "" ];
+    content.removeAt( 0 );
+    return content;
+}
 
 auto relToGame( String )( String path, string gameDir )
 {

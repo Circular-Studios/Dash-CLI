@@ -68,16 +68,4 @@ void compressYaml( string gameDir )
 }
 
 private:
-Node makeMap()
-{
-    Node content = [ "": "" ];
-    content.removeAt( 0 );
-    return content;
-}
 
-Node makeArray()
-{
-    Node content = [ "" ];
-    content.removeAt( 0 );
-    return content;
-}

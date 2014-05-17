@@ -1,4 +1,5 @@
 module dash.cli.app;
+import dash.cli.commands, dash.cli.project;
 import dash.cli.compress, dash.cli.publish, dash.cli.create;
 
 import std.stdio, std.string, std.getopt, std.path;

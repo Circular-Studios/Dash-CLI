@@ -7,7 +7,8 @@ void main( string[] args )
 {
     if( args.length < 2 )
     {
-        return printHelp();
+        printHelp();
+        return;
     }
 
     // Default vars for execution.

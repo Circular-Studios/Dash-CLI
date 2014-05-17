@@ -1,5 +1,5 @@
 module dash.cli.app;
-import dash.cli.compress, dash.cli.publish;
+import dash.cli.compress, dash.cli.publish, dash.cli.create;
 
 import std.stdio, std.string, std.getopt, std.path;
 
@@ -22,6 +22,12 @@ void main( string[] args )
 
     switch( args[ 1 ].toLower )
     {
+    case "create":
+        writeln( "Creating a new project" );
+
+        createProject( gameDir );
+        break;
+
     case "compress":
         writeln( "Compressing game content" );
 

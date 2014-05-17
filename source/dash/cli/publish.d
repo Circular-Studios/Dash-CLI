@@ -27,7 +27,7 @@ void publishGame( string gameDir, string zipName )
     auto zip = new ZipArchive();
 
     // Directories to zip.
-    auto dirs = folders.filter!( dir => dir.publishable ).map!( pth => gameDir.buildNormalizedPath( pth.name ).absolutePath );
+    auto dirs = folders.filter!( dir => dir.publishable ).map!( pth => pth.name.inGame( gameDir ) );
 
     // Put each file in the zip.
     foreach( dir; dirs ) foreach( file; dir.dirEntries( SpanMode.breadth ).filter!( entry => entry.isFile ) )

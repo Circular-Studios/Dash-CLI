@@ -103,7 +103,7 @@ class CompressCommand : Command
         foreach( entry; project.directory.dirEntries( "*.y{a,}ml", SpanMode.depth ) )
         {
             // Get list of folders/filename
-            auto folders = project.pathToMember( entry.name ).split( dirSeparator );
+            auto folders = project.pathToMember( entry.name ).relativePath( project.directory ).split( dirSeparator );
 
             // Remove . in path.
             if( folders[ 0 ] == "." )

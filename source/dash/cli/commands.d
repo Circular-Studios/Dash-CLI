@@ -64,6 +64,10 @@ class CreateCommand : Command
             if( !absPath.dirName.exists )
                 absPath.dirName.mkdirRecurse();
 
+            // If we're not placing .gitkeeps, and this file is one, ignore it.
+            if( de.name.baseName == ".gitkeep" && !leaveGitkeep )
+                continue;
+
             // Extract the file.
             auto f = new File( absPath, FileMode.OutNew );
             zr.expand( de );

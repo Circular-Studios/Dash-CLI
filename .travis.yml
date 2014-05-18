@@ -14,9 +14,9 @@ install:
 script:
 - sudo dub test -q
 - sudo dub build --force
-- sudo ./dash create -g ../test-create
-- sudo ./dash compress -g ../test-create
-- sudo ./dash publish -g ../test-create
+- sudo ./dash create ../test-create
+- sudo ./dash compress ../test-create
+- sudo ./dash publish ../test-create
 after_success:
 - zip -r empty-game.zip empty-game
 - zip -r dash-cli-$TRAVIS_TAG-$TRAVIS_OS_NAME.zip dash empty-game.zip

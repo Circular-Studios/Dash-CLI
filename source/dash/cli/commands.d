@@ -88,7 +88,7 @@ class CompressCommand : Command
 
     override void execute( Project project )
     {
-        import yaml;
+        import yaml, std.stream;
         Node content = makeMap();
 
         enum passThrough( string tag ) = q{
@@ -147,7 +147,10 @@ class CompressCommand : Command
             content.removeAt( "Content" );
 
         // Write to content file.
-        Dumper( project.pathToMember( "Content.yml" ) ).dump( content );
+        auto f = new File( project.pathToMember( "Content.yml" ), FileMode.OutNew );
+        Dumper( f ).dump( content );
+        f.flush();
+        f.close();
     }
 }
 

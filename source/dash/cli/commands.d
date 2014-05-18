@@ -216,7 +216,7 @@ class PublishCommand : Command
         {
             auto am = new ArchiveMember();
             am.compressionMethod = CompressionMethod.deflate;
-            am.name = project.pathToMember( file );
+            am.name = project.pathToMember( file ).relativePath( project.directory );
             am.expandedData = cast( ubyte[] )read( file.absolutePath );
             zip.addMember( am );
         }

@@ -38,7 +38,7 @@ class CreateCommand : Command
 
     override void prepare( ref string[] args )
     {
-        args.getopt(
+        args.getopt( config.passThrough,
             "k|gitkeep", &leaveGitkeep );
     }
 
@@ -166,7 +166,7 @@ class PublishCommand : Command
 
     override void prepare( ref string[] args )
     {
-        args.getopt(
+        args.getopt( config.passThrough,
             "o|zipfile", &zipName );
 
         compress.prepare( args );

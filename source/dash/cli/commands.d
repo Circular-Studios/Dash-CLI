@@ -185,7 +185,13 @@ class PublishCommand : Command
 
         // Build the game.
         io.writeln( "Building game..." );
-        proc.execute( [ "dub", "build", "--build=release", "--force", "-q" ] );
+        auto result = proc.execute( [ "dub", "build", "--build=release", "--force", "-q" ] );
+
+        if( result.status != 0 )
+        {
+            io.writeln( "Error(s) compiling project:\n", result.output );
+            return;
+        }
 
         // Go back to previous path.
         chdir( curPath );

@@ -13,12 +13,11 @@ install:
 script:
 - sudo dub test -q
 - sudo dub build --force
-- sudo ./dash create ../test-create
-- sudo ./dash compress ../test-create
-- sudo ./dash publish ../test-create
+- sudo ./bin/dash create ../test-create
+- sudo ./bin/dash compress ../test-create
+- sudo ./bin/dash publish ../test-create
 after_success:
-- zip -r empty-game.zip empty-game
-- zip -r dash-cli-$TRAVIS_TAG-$TRAVIS_OS_NAME.zip dash empty-game.zip
+- zip -r dash-cli-$TRAVIS_TAG-$TRAVIS_OS_NAME.zip ./bin/dash ./bin/empty-game.zip
 - sudo bash ./.travis/github-release.sh "$TRAVIS_REPO_SLUG" "`git describe`" dash-cli-$TRAVIS_TAG-$TRAVIS_OS_NAME.zip
 notifications:
   webhooks:

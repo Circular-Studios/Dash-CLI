@@ -5,6 +5,7 @@
 	"authors": [ "Colden Cullen" ],
 	"targetName": "dash",
 	"targetType": "executable",
+	"targetPath": "bin/",
 	"dependencies": {
 		"dyaml": "~master"
 	}

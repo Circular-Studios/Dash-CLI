@@ -16,9 +16,7 @@ script:
 - sudo ./bin/dash create ../test-create
 - sudo ./bin/dash compress ../test-create
 - sudo ./bin/dash publish ../test-create
-after_success:
-- zip -r dash-cli-$TRAVIS_TAG-$TRAVIS_OS_NAME.zip ./bin/dash ./bin/empty-game.zip
-- sudo bash ./.travis/github-release.sh "$TRAVIS_REPO_SLUG" "`git describe`" dash-cli-$TRAVIS_TAG-$TRAVIS_OS_NAME.zip
+after_success: zip -r dash-cli-$TRAVIS_TAG-$TRAVIS_OS_NAME.zip ./bin/dash ./bin/empty-game.zip
 notifications:
   webhooks:
     urls:
@@ -26,3 +24,13 @@ notifications:
     on_success: change
     on_failure: always
     on_start: never
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: Ef8tYoL5bdEfHwzJOo5GJoxygsQwB1whwTdyyzUhyrYn2J0/lgBkCY4NDn3nmZan0tgsMbg2rO2bCurq1pBZ8GMbV3YOo+EHq78xra2m81Kl67sOc8fvMnJ2Ao2NUR7ZbLoONxQYN7geg6jPkr3NFkyrNHyUUF8YXUBFFy5DdPU=
+  file: dash-cli-$TRAVIS_TAG-$TRAVIS_OS_NAME.zip
+  on:
+    tags: true
+    all_branches: false
+    repo: Circular-Studios/Dash-CLI

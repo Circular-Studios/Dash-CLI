@@ -35,11 +35,13 @@ void main( string[] args )
 
     args = args[ 0 ] ~ args[ 2..$ ];
 
-    // Give project the first crack at args.
-    project.prepare( args );
-
-    // Then the command.
+    // Give command the first crack at args.
+    // This way commands that need a second word (e.g. `add script`)
+    // can check for that before the project path get's picked.
     cmd.prepare( args );
+
+    // Then the project.
+    project.prepare( args );
 
     // Make sure there are no leftover args.
     if( args.length > 1 )

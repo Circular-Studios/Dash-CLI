@@ -1,10 +1,10 @@
 module dash.cli.app;
 import dash.cli.commands, dash.cli.project;
 
-import std.algorithm, std.stdio;
-
 void main( string[] args )
 {
+    import std.algorithm: countUntil;
+
     // The project to operate on.
     Project project = new Project;
 
@@ -55,6 +55,8 @@ void main( string[] args )
 
 void fail( Args... )( Args messages )
 {
+    import std.stdio: write, writeln;
+
     foreach( msg; messages )
         write( msg );
 
@@ -65,5 +67,7 @@ void fail( Args... )( Args messages )
 
 void printHelp()
 {
+    import std.stdio: writeln;
+
     writeln( "Welcome to the Dash Engine!" );
 }

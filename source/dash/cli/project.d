@@ -1,7 +1,5 @@
 module dash.cli.project;
 
-import std.path;
-
 final class Project
 {
     string name;
@@ -9,6 +7,8 @@ final class Project
 
     void prepare( ref string[] args )
     {
+        import std.path: getcwd, dirName, absolutePath, buildNormalizedPath;
+
         directory = getcwd();
 
         // Get the name.
@@ -28,8 +28,9 @@ final class Project
         directory = directory.absolutePath.buildNormalizedPath();
     }
 
-    string pathToMember( string foler )
+    string pathToMember( string folder )
     {
-        return directory.buildNormalizedPath( foler ).absolutePath.buildNormalizedPath();
+        import std.path: absolutePath, buildNormalizedPath;
+        return directory.buildNormalizedPath( folder ).absolutePath.buildNormalizedPath();
     }
 }

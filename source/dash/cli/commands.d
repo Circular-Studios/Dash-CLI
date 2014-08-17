@@ -1,9 +1,5 @@
 module dash.cli.commands;
-import dash.cli.project;
-import dash.cli.utility;
-
-import std.getopt, std.algorithm, std.string, std.array, std.file, std.path;
-import io = std.stdio;
+import dash.cli.project, dash.cli.utility;
 
 abstract class Command
 {
@@ -38,6 +34,8 @@ class CreateCommand : Command
 
     override void prepare( ref string[] args )
     {
+        import std.getopt: getopt, config;
+
         args.getopt( config.passThrough,
             "k|gitkeep", &leaveGitkeep );
     }
@@ -45,6 +43,7 @@ class CreateCommand : Command
     override void execute( Project project )
     {
         import std.file, std.path, std.zip, std.stream, std.algorithm;
+
         // If the project folder doesn't exist, create it.
         if( !project.directory.exists() )
             project.directory.mkdirRecurse();
@@ -92,7 +91,12 @@ class CompressCommand : Command
 
     override void execute( Project project )
     {
-        import yaml, std.stream;
+        import yaml: Node, Constructor, Loader, Dumper;
+        import std.stream: File, FileMode;
+        import std.string: strip, split, replace;
+        import std.file: dirEntries, dirSeparator, SpanMode;
+        import std.path: relativePath, absolutePath, stripExtension;
+
         Node content = makeMap();
 
         enum passThrough( string tag ) = q{
@@ -173,6 +177,8 @@ class PublishCommand : Command
 
     override void prepare( ref string[] args )
     {
+        import std.getopt: getopt, config;
+
         args.getopt( config.passThrough,
             "o|zipfile", &zipName );
 
@@ -181,8 +187,13 @@ class PublishCommand : Command
 
     override void execute( Project project )
     {
-        import std.zip;
         import proc = std.process;
+        import std.zip;
+        import std.path: getcwd, relativePath, absolutePath;
+        import std.file: chdir, read, write, dirEntries, SpanMode;
+        import std.stdio: writeln;
+        import std.algorithm: filter, map;
+
         // Make sure Yaml is in good shape.
         compress.execute( project );
 
@@ -191,19 +202,19 @@ class PublishCommand : Command
         chdir( project.directory );
 
         // Build the game.
-        io.writeln( "Building game..." );
-        auto result = proc.execute( [ "dub", "build", "--build=release", "--force", "-q" ] );
+        writeln( "Building game..." );
+        auto result = proc.execute( [ "dub", "build", "--build=release", "--force", "--quiet" ] );
 
         if( result.status != 0 )
         {
-            io.writeln( "Error(s) compiling project:\n", result.output );
+            writeln( "Error(s) compiling project:\n", result.output );
             return;
         }
 
         // Go back to previous path.
         chdir( curPath );
 
-        io.writeln( "Packaging distributable..." );
+        writeln( "Packaging distributable..." );
 
         // Archive to zip to.
         auto zip = new ZipArchive();

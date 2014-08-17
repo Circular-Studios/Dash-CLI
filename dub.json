@@ -1,12 +1,15 @@
 {
-	"name": "dash-cli",
-	"description": "A command line interface for Dash to help with development.",
-	"copyright": "Copyright © 2014, Circular Studios",
-	"authors": [ "Colden Cullen" ],
-	"targetName": "dash",
-	"targetType": "executable",
-	"targetPath": "bin/",
-	"dependencies": {
-		"dyaml": "~master"
-	}
+    "name": "dash-cli",
+    "description": "A command line interface for Dash to help with development.",
+    "copyright": "Copyright © 2014, Circular Studios",
+    "license": "MIT",
+    "authors": [ "Colden Cullen" ],
+
+    "dependencies": {
+        "dyaml": "~>0.5"
+    },
+
+    "targetName": "dash",
+    "targetType": "executable",
+    "targetPath": "bin/"
 }

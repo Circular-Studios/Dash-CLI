@@ -1,15 +1,24 @@
 language: d
 env:
+- DMD_VER=2.066.0 DUB_VER=0.9.21
   global:
     secure: DXuSnGg2UgnG653rGeqIm2EOeLitKpq98rkmIiGbVdooqZX292ZZGTpB9tdLcu3+918vAMUt3wUNIskHT8F8ubNaqdp8/jzQAt2i/9cWm2MJcOAFSPqyY5ldmLggTPdSza91UJQ5s1/GspzmzROjrey7kjcn00uVDnm6OvoqiAk=
 install:
-- sudo wget http://netcologne.dl.sourceforge.net/project/d-apt/files/d-apt.list -O
-  /etc/apt/sources.list.d/d-apt.list
+- # Install DMD
+- DMD_DEB=dmd_${DMD_VER}-0_amd64.deb
+- wget ftp://ftp.dlang.org/${DMD_DEB}
+- sudo dpkg -i ${DMD_DEB} || true
 - sudo apt-get update
-- sudo apt-get -y --allow-unauthenticated install --reinstall d-apt-keyring
-- sudo apt-get update
-- sudo apt-get install dmd-bin dub libfreeimage-dev libjpeg62-dev
+- sudo apt-get install -f
+- sudo dpkg -i ${DMD_DEB}
+# Install dub
+- DUB_TAR=dub-${DUB_VER}-${TRAVIS_OS_NAME}-x86_64.tar.gz
+- wget http://code.dlang.org/files/${DUB_TAR}
+- sudo tar -C /usr/local/bin -zxf ${DUB_TAR}
+# Install x11
 - sudo dub fetch x11
+# Install system dependencies
+- sudo apt-get install libfreeimage-dev libjpeg62-dev
 script:
 - sudo dub test -q
 - sudo dub build --force

@@ -43,15 +43,21 @@ class CreateCommand : Command
     override void execute( Project project )
     {
         import std.file, std.path, std.zip, std.stream, std.algorithm;
+        import std.stdio: writeln;
+
+        // Check that the empty-game.zip file exists
+        string emptyGameLocation = thisExePath.dirName.buildNormalizedPath( "empty-game.zip" );
+        if ( !exists(emptyGameLocation)) {
+            writeln("Can't access ", emptyGameLocation);
+            return;
+        }
 
         // If the project folder doesn't exist, create it.
         if( !project.directory.exists() )
             project.directory.mkdirRecurse();
 
-        // Unzip empty game to new folder.
-        auto zr = new ZipArchive( thisExePath.dirName.buildNormalizedPath( "empty-game.zip" ).read() );
-
         // Extract the empty-game.zip template.
+        auto zr = new ZipArchive( emptyGameLocation.read() );
         foreach( ArchiveMember de; zr.directory )
         {
             // Ignore folders.
